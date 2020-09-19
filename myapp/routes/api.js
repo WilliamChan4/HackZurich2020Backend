@@ -21,6 +21,7 @@ router.get('/nearby', async function (req, res, next) {
             maxprice: 4, // maxprice 4 (most expensive)
             opennow: true,
             rankby: 'distance',
+            language: 'en',
             keyword: req.query.keyword
         }
     }).then((r) => {
@@ -49,6 +50,22 @@ router.get('/photo/:ref', async function (req, res) {
     }).catch((e) => {
         console.log(e);
         res.send("Fetching Photo Failed");
+    })
+});
+
+router.get('/details/:place_id', async function (req, res) {
+    client.placeDetails({
+        params: {
+            key: process.env.GOOGLE_KEY,
+            language: 'en',
+            place_id: req.params.place_id,
+            fields: ['website', 'formatted_phone_number', 'international_phone_number']
+        }
+    }).then((response) => {
+        res.json(response.data);
+    }).catch((e) => {
+        console.log(e);
+        res.send("Fetching Details Failed");
     })
 });
 
