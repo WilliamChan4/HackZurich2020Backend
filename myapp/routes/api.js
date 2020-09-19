@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const {Client} = require("@googlemaps/google-maps-services-js");
 var express = require('express');
 var router = express.Router();
@@ -8,7 +10,7 @@ const client = new Client({});
 router.get('/nearby', async function(req, res, next) {
     client.placesNearby({
         params: {
-            key: "AIzaSyBUeDL-xT5_yWEe2zANR1U55-zYpVwNQZw",
+            key: process.env.GOOGLE_KEY,
             location: [51.053820, 3.722270],
             type: 'restaurant',
             minprice: 0, // minprice 0 (most affordable)
