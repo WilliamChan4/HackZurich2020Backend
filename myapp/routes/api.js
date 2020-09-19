@@ -8,7 +8,7 @@ const client = new Client({});
 
 /*
     GET restaurants listing.
-    usage http://localhost:3000/api/nearby?lat=51.053820&lon=3.722270
+    usage http://localhost:3000/api/nearby?lat=51.053820&lon=3.722270&keyword=italian
 */
 router.get('/nearby', async function(req, res, next) {
     client.placesNearby({
@@ -20,15 +20,16 @@ router.get('/nearby', async function(req, res, next) {
             maxprice: 4, // maxprice 4 (most expensive)
             opennow: true,
             rankby: 'distance',
+            keyword: req.query.keyword
         }
     }).then((r) => {
-        console.log(r);
         res.json(r.data.results);
     }).catch((e) => {
         console.log(e);
         res.send("Restaurants List Failed");
     });
 });
+
 
 /*
     Send picture of google to frontend
@@ -49,6 +50,8 @@ router.get('/photo/:ref', async function (req, res) {
         res.send("Fetching Photo Failed");
     })
 });
+
+
 /*
     Calculate distance from origin to destination for biking, walking and driving
     {
