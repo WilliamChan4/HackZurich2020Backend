@@ -49,5 +49,46 @@ router.get('/photo/:ref', async function (req, res) {
         res.send("Fetching Photo Failed");
     })
 });
+/*
+    Calculate distance from origin to destination for biking, walking and driving
+    {
+       "driving":{
+          "distance":{
+             "text":"4.2 km",
+             "value":4193 // value in metric units (meter)
+          },
+          "duration":{
+             "text":"12 mins",
+             "value":692 // (seconds)
+          },
+          "status":"OK"
+       },
+       "bicycling":{ ... },
+       "walking":{ ... }
+    }
+    http://localhost:3000/api/distance?origin_lat=51.053820&origin_lon=3.722270&dest_lat=51.0264821&dest_lon=3.715445
+ */
+router.get('/distance', async function (req, res) {
+    let travelModes = ['driving', 'bicycling', 'walking'];
+    let promises = travelModes.map(travelMode => client.distancematrix({
+        params: {
+            key: process.env.GOOGLE_KEY,
+            origins: [[req.query.origin_lat, req.query.origin_lon]],
+            destinations: [[req.query.dest_lat, req.query.dest_lon]],
+            language: 'en',
+            units: 'metric',
+            mode: travelMode
+        }
+    }));
+
+    Promise.all(promises).then(responses => {
+        let result = {};
+        responses.forEach((response, i) => result[travelModes[i]] = response.data.rows[0].elements[0]);
+        res.json(result);
+    }).catch(error => {
+        console.log(error);
+        res.send("Distance calculation Failed");
+    });
+});
 
 module.exports = router;
