@@ -1,2 +1,2 @@
 # HackZurich2020Backend
-Climate Change Project
+Climate Change Project Backend
