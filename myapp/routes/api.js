@@ -6,12 +6,15 @@ var router = express.Router();
 
 const client = new Client({});
 
-/* GET restaurants listing. */
+/*
+    GET restaurants listing.
+    usage http://localhost:3000/api/nearby?lat=51.053820&lon=3.722270
+*/
 router.get('/nearby', async function(req, res, next) {
     client.placesNearby({
         params: {
             key: process.env.GOOGLE_KEY,
-            location: [51.053820, 3.722270],
+            location: [req.query.lat, req.query.lon],
             type: 'restaurant',
             minprice: 0, // minprice 0 (most affordable)
             maxprice: 4, // maxprice 4 (most expensive)
