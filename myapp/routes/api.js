@@ -27,4 +27,24 @@ router.get('/nearby', async function(req, res, next) {
     });
 });
 
+/*
+    Send picture of google to frontend
+    https://stackoverflow.com/questions/29157732/how-to-send-image-to-client-using-express-node-js
+ */
+router.get('/photo/:ref', async function (req, res) {
+    client.placePhoto({
+        params: {
+            key: process.env.GOOGLE_KEY,
+            maxwidth: 400,
+            photoreference: req.params.ref
+        }
+    }).then((r) => {
+        res.set({'Content-Type': 'image/png'});
+        res.send(r.data);
+    }).catch((e) => {
+        console.log(e);
+        res.send("Fetching Photo Failed");
+    })
+});
+
 module.exports = router;
